@@ -55,7 +55,7 @@ A comprehensive, Django-powered hotel management system designed to streamline o
 
 ### 1. Clone the repository
 
-```bash
+
 git clone https://github.com/SIRI-bit-tech/HOTELMANAGEMENT
 cd HOTELMANAGEMENT
 
@@ -98,14 +98,14 @@ cd HOTELMANAGEMENT
 
 # Email (for development)
 - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-
+```
 ---
 
 ### 5. Apply Database Migrations
 
 ```bash
 - python manage.py migrate
-
+```
 ---
 
 ### 6. Create a Superuser
@@ -113,6 +113,7 @@ cd HOTELMANAGEMENT
 ```bash
 - python manage.py createsuperuser
 - Follow the prompts to set up your admin account.
+```
 
 ---
 
@@ -121,6 +122,7 @@ cd HOTELMANAGEMENT
 ```bash
 - python manage.py runserver
 - Then open http://127.0.0.1:8000 in your browser to view the application.
+```
 
 ---
 
@@ -161,3 +163,4 @@ If you’re using Celery for background tasks (e.g., sending emails or generatin
 ![Homepage Screenshot](screenshots/Homepage.png)
 ![dashboard-light Screenshot](screenshots\dashboard-light.png)
 ![dashboard-dark Screenshot](screenshots\dashboard-dark.png)
+```

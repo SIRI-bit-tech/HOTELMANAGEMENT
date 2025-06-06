@@ -1,0 +1,55 @@
+<header class="bg-white shadow-sm sticky top-0 z-50" x-data="{ mobileMenuOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex-shrink-0 flex items-center">
+                <a href="{% url 'core:landing_page' %}" class="flex items-center">
+                    <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">HotelPMS</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="{% url 'core:features' %}" class="text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
+                <a href="{% url 'core:about' %}" class="text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">About</a>
+                <a href="{% url 'core:contact' %}" class="text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">Contact</a>
+            </nav>
+
+            <!-- Desktop CTA -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="{% url 'users:login' %}" class="text-gray-600 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors">Sign In</a>
+                <a href="{% url 'users:login' %}" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Get Started</a>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="text-gray-600 hover:text-primary-600 focus:outline-none focus:text-primary-600">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="mobileMenuOpen" x-cloak stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div x-show="mobileMenuOpen" x-cloak class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+                <a href="{% url 'core:features' %}" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md">Features</a>
+                <a href="{% url 'core:about' %}" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md">About</a>
+                <a href="{% url 'core:contact' %}" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md">Contact</a>
+                <div class="pt-4 pb-3 border-t border-gray-200">
+                    <div class="flex items-center px-3 space-y-2 flex-col">
+                        <a href="{% url 'users:login' %}" class="w-full text-center px-3 py-2 text-base font-medium text-gray-600 hover:text-primary-600 hover:bg-gray-50 rounded-md">Sign In</a>
+                        <a href="{% url 'users:login' %}" class="w-full text-center bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-md text-base font-medium">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

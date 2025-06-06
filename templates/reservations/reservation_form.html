@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - HotelPMS{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'reservations:reservation_list' %}" class="text-gray-400 hover:text-gray-600 mr-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+            <form method="post" class="space-y-6" hx-boost="true">
+                {% csrf_token %}
+                
+                <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Reservation Details</h3>
+                </div>
+                
+                <div class="px-6 py-5 space-y-6">
+                    <!-- Guest Information -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Guest Information</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Guest Selection -->
+                            <div>
+                                <label for="{{ form.guest.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Guest *
+                                </label>
+                                <div class="relative" x-data="{ open: false, selected: false }">
+                                    {{ form.guest }}
+                                    
+                                    <div class="mt-2">
+                                        <a href="{% url 'guests:create_guest' %}?next={{ request.path }}" class="text-primary-600 hover:text-primary-900 text-sm">
+                                            + Add New Guest
+                                        </a>
+                                    </div>
+                                    
+                                    {% if form.guest.errors %}
+                                        <p class="mt-1 text-sm text-red-600">{{ form.guest.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Number of Guests -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="{{ form.adults.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Adults *
+                                    </label>
+                                    {{ form.adults }}
+                                    {% if form.adults.errors %}
+                                        <p class="mt-1 text-sm text-red-600">{{ form.adults.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <label for="{{ form.children.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        Children
+                                    </label>
+                                    {{ form.children }}
+                                    {% if form.children.errors %}
+                                        <p class="mt-1 text-sm text-red-600">{{ form.children.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reservation Dates -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Reservation Dates</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="{{ form.check_in_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Check-in Date *
+                                </label>
+                                {{ form.check_in_date }}
+                                {% if form.check_in_date.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.check_in_date.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="{{ form.check_out_date.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Check-out Date *
+                                </label>
+                                {{ form.check_out_date }}
+                                {% if form.check_out_date.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.check_out_date.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Room Selection -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Room Selection</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="{{ form.room.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Room *
+                                </label>
+                                {{ form.room }}
+                                {% if form.room.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.room.errors.0 }}</p>
+                                {% endif %}
+                                
+                                <div class="mt-2">
+                                    <a href="{% url 'rooms:availability_calendar' %}" class="text-primary-600 hover:text-primary-900 text-sm">
+                                        View Availability Calendar
+                                    </a>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="{{ form.rate.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Rate per Night *
+                                </label>
+                                {{ form.rate }}
+                                {% if form.rate.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.rate.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Information -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Additional Information</h4>
+                        
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label for="{{ form.special_requests.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Special Requests
+                                </label>
+                                {{ form.special_requests }}
+                                {% if form.special_requests.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.special_requests.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Internal Notes
+                                </label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                    <p class="mt-1 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-3">
+                    <a href="{% url 'reservations:reservation_list' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="bg-primary-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        {% if reservation %}Update Reservation{% else %}Create Reservation{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Calculate total nights and update rate when dates change
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkInInput = document.getElementById('{{ form.check_in_date.id_for_label }}');
+        const checkOutInput = document.getElementById('{{ form.check_out_date.id_for_label }}');
+        const roomSelect = document.getElementById('{{ form.room.id_for_label }}');
+        const rateInput = document.getElementById('{{ form.rate.id_for_label }}');
+        
+        function updateRate() {
+            if (checkInInput.value && checkOutInput.value && roomSelect.value) {
+                const checkIn = new Date(checkInInput.value);
+                const checkOut = new Date(checkOutInput.value);
+                
+                // Calculate nights
+                const nights = Math.round((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                
+                if (nights > 0) {
+                    // Get base rate from selected room option
+                    const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+                    const baseRate = selectedOption.getAttribute('data-base-rate');
+                    
+                    if (baseRate) {
+                        rateInput.value = baseRate;
+                    }
+                }
+            }
+        }
+        
+        checkInInput.addEventListener('change', updateRate);
+        checkOutInput.addEventListener('change', updateRate);
+        roomSelect.addEventListener('change', updateRate);
+    });
+</script>
+{% endblock %}

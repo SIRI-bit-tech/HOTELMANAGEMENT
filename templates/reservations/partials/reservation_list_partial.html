@@ -1,0 +1,114 @@
+<div class="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+            <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Reservation</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Guest</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Room</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dates</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            {% for reservation in reservations %}
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                        <a href="{% url 'reservations:reservation_detail' reservation.id %}" class="text-primary-600 hover:text-primary-900">
+                            #{{ reservation.id }}
+                        </a>
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ reservation.created_at|date:"M d, Y" }}
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10">
+                            <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name={{ reservation.guest.first_name }}+{{ reservation.guest.last_name }}&background=10B981&color=fff" alt="{{ reservation.guest.full_name }}">
+                        </div>
+                        <div class="ml-4">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                <a href="{% url 'guests:guest_detail' reservation.guest.id %}" class="hover:text-primary-600">
+                                    {{ reservation.guest.full_name }}
+                                </a>
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ reservation.adults }} adult{{ reservation.adults|pluralize }}{% if reservation.children %}, {{ reservation.children }} child{{ reservation.children|pluralize }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-white">
+                        <a href="{% url 'rooms:room_detail' reservation.room.id %}" class="hover:text-primary-600">
+                            Room {{ reservation.room.room_number }}
+                        </a>
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ reservation.room.room_type.name }}
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-white">
+                        {{ reservation.check_in_date|date:"M d" }} - {{ reservation.check_out_date|date:"M d, Y" }}
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                        {{ reservation.nights }} night{{ reservation.nights|pluralize }}
+                    </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    {% if reservation.status == 'confirmed' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            Confirmed
+                        </span>
+                    {% elif reservation.status == 'checked_in' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Checked In
+                        </span>
+                    {% elif reservation.status == 'checked_out' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Checked Out
+                        </span>
+                    {% elif reservation.status == 'cancelled' %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Cancelled
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    ${{ reservation.total_amount|floatformat:2 }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div class="flex justify-end space-x-2">
+                        <a href="{% url 'reservations:reservation_detail' reservation.id %}" class="text-primary-600 hover:text-primary-900">View</a>
+                        {% if reservation.status == 'confirmed' %}
+                            <a href="{% url 'reservations:check_in' reservation.id %}" class="text-green-600 hover:text-green-900">Check In</a>
+                        {% elif reservation.status == 'checked_in' %}
+                            <a href="{% url 'reservations:check_out' reservation.id %}" class="text-blue-600 hover:text-blue-900">Check Out</a>
+                        {% endif %}
+                        <a href="{% url 'reservations:edit_reservation' reservation.id %}" class="text-primary-600 hover:text-primary-900">Edit</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No reservations found</h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new reservation.</p>
+                    <div class="mt-6">
+                        <a href="{% url 'reservations:create_reservation' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                            New Reservation
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

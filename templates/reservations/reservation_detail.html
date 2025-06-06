@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+{% block title %}Reservation #{{ reservation.id }} - HotelPMS{% endblock %}
+{% block description %}Reservation details for {{ reservation.guest.full_name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'reservations:reservation_list' %}" class="text-gray-400 hover:text-gray-600 mr-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Reservation #{{ reservation.id }}</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if reservation.status == 'confirmed' %}
+                        <a href="{% url 'reservations:check_in' reservation.id %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Check In
+                        </a>
+                    {% elif reservation.status == 'checked_in' %}
+                        <a href="{% url 'reservations:check_out' reservation.id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            Check Out
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'reservations:edit_reservation' reservation.id %}" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Edit Reservation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Reservation Details -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Reservation Details</h3>
+                        {% if reservation.status == 'confirmed' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Confirmed
+                            </span>
+                        {% elif reservation.status == 'checked_in' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                Checked In
+                            </span>
+                        {% elif reservation.status == 'checked_out' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                Checked Out
+                            </span>
+                        {% elif reservation.status == 'cancelled' %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Cancelled
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="px-6 py-5">
+                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Check-in Date</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ reservation.check_in_date|date:"F d, Y" }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Check-out Date</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ reservation.check_out_date|date:"F d, Y" }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Number of Nights</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ reservation.nights }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Guests</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+                                    {{ reservation.adults }} adult{{ reservation.adults|pluralize }}{% if reservation.children %}, {{ reservation.children }} child{{ reservation.children|pluralize }}{% endif %}
+                                </dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Rate per Night</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white">${{ reservation.rate|floatformat:2 }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white font-semibold">${{ reservation.total_amount|floatformat:2 }}</dd>
+                            </div>
+                            {% if reservation.special_requests %}
+                            <div class="md:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Special Requests</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-line">{{ reservation.special_requests }}</dd>
+                            </div>
+                            {% endif %}
+                            {% if reservation.notes %}
+                            <div class="md:col-span-2">
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Internal Notes</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-white whitespace-pre-line">{{ reservation.notes }}</dd>
+                            </div>
+                            {% endif %}
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Reservation Timeline</h3>
+                    </div>
+                    <div class="px-6 py-5">
+                        <div class="flow-root">
+                            <ul class="-mb-8">
+                                <li>
+                                    <div class="relative pb-8">
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
+                                                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Reservation created</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                    {{ reservation.created_at|date:"M d, Y g:i A" }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                
+                                {% if reservation.status == 'checked_in' or reservation.status == 'checked_out' %}
+                                <li>
+                                    <div class="relative pb-8">
+                                        {% if reservation.status == 'checked_out' %}
+                                        <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                                        {% endif %}
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center ring-8 ring-white">
+                                                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Guest checked in</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                    {% if reservation.actual_check_in %}
+                                                        {{ reservation.actual_check_in|date:"M d, Y g:i A" }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                
+                                {% if reservation.status == 'checked_out' %}
+                                <li>
+                                    <div class="relative">
+                                        <div class="relative flex space-x-3">
+                                            <div>
+                                                <span class="h-8 w-8 rounded-full bg-gray-500 flex items-center justify-center ring-8 ring-white">
+                                                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
+                                                <div>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Guest checked out</p>
+                                                </div>
+                                                <div class="text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                    {% if reservation.actual_check_out %}
+                                                        {{ reservation.actual_check_out|date:"M d, Y g:i A" }}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-8">
+                <!-- Guest Information -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Guest Information</h3>
+                    </div>
+                    <div class="px-6 py-5">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0 h-16 w-16">
+                                <img class="h-16 w-16 rounded-full" src="https://ui-avatars.com/api/?name={{ reservation.guest.first_name }}+{{ reservation.guest.last_name }}&background=10B981&color=fff&size=64" alt="{{ reservation.guest.full_name }}">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">
+                                    <a href="{% url 'guests:guest_detail' reservation.guest.id %}" class="hover:text-primary-600">
+                                        {{ reservation.guest.full_name }}
+                                    </a>
+                                </h4>
+                                {% if reservation.guest.is_vip %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                    VIP
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="text-sm text-gray-900 dark:text-white">{{ reservation.guest.email }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg class="h-5 w-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                                <span class="text-sm text-gray-900 dark:text-white">{{ reservation.guest.phone|default:"Not provided" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <a href="{% url 'guests:guest_detail' reservation.guest.id %}" class="text-primary-600 hover:text-primary-900 text-sm font-medium">
+                                View Full Profile →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Information -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Room Information</h3>
+                    </div>
+                    <div class="px-6 py-5">
+                        <div class="flex items-center mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-primary-600 font-semibold">{{ reservation.room.room_number }}</span>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">
+                                    <a href="{% url 'rooms:room_detail' reservation.room.id %}" class="hover:text-primary-600">
+                                        Room {{ reservation.room.room_number }}
+                                    </a>
+                                </h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ reservation.room.room_type.name }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Floor:</span>
+                                <span class="text-sm text-gray-900 dark:text-white">{{ reservation.room.floor }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Max Occupancy:</span>
+                                <span class="text-sm text-gray-900 dark:text-white">{{ reservation.room.room_type.max_occupancy }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Size:</span>
+                                <span class="text-sm text-gray-900 dark:text-white">{{ reservation.room.room_type.size_sqft }} sq ft</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <a href="{% url 'rooms:room_detail' reservation.room.id %}" class="text-primary-600 hover:text-primary-900 text-sm font-medium">
+                                View Room Details →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h3>
+                    </div>
+                    <div class="px-6 py-5 space-y-3">
+                        <a href="{% url 'billing:create_invoice' %}?reservation_id={{ reservation.id }}" class="block w-full text-center bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            Create Invoice
+                        </a>
+                        <a href="{% url 'housekeeping:create_task' %}?room_id={{ reservation.room.id }}" class="block w-full text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            Create Housekeeping Task
+                        </a>
+                        <a href="{% url 'reservations:create_reservation' %}?guest_id={{ reservation.guest.id }}" class="block w-full text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                            New Reservation for Guest
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

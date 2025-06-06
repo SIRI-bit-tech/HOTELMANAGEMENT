@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ guest.full_name }} - Guest Details{% endblock %}
+{% block description %}Guest profile and reservation history for {{ guest.full_name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'guests:guest_list' %}" class="text-gray-400 hover:text-gray-600 mr-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Guest Details</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'guests:edit_guest' guest.id %}" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Edit Guest
+                    </a>
+                    <a href="{% url 'reservations:create_reservation' %}?guest_id={{ guest.id }}" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        New Reservation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Guest Profile -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Guest Profile</h3>
+                        {% if guest.is_vip %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            VIP
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="px-6 py-5">
+                        <div class="flex items-center mb-6">
+                            <div class="flex-shrink-0 h-24 w-24">
+                                <img class="h-24 w-24 rounded-full" src="https://ui-avatars.com/api/?name={{ guest.first_name }}+{{ guest.last_name }}&background=10B981&color=fff&size=128" alt="{{ guest.full_name }}">
+                            </div>
+                            <div class="ml-6">
+                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ guest.full_name }}</h2>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Guest since {{ guest.created_at|date:"F Y" }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Contact Information</h4>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex items-center">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="ml-3 text-sm text-gray-900 dark:text-white">{{ guest.email }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                        </svg>
+                                        <span class="ml-3 text-sm text-gray-900 dark:text-white">{{ guest.phone }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Personal Information</h4>
+                                <div class="mt-2 space-y-2">
+                                    <div class="flex items-center">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="ml-3 text-sm text-gray-900 dark:text-white">
+                                            {% if guest.date_of_birth %}
+                                                {{ guest.date_of_birth|date:"F d, Y" }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                                        </svg>
+                                        <span class="ml-3 text-sm text-gray-900 dark:text-white">
+                                            {{ guest.nationality|default:"Not provided" }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path>
+                                        </svg>
+                                        <span class="ml-3 text-sm text-gray-900 dark:text-white">
+                                            {{ guest.identification_type|default:"" }}: {{ guest.identification_number|default:"Not provided" }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Address</h4>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-900 dark:text-white">
+                                        {% if guest.address %}
+                                            {{ guest.address }}<br>
+                                            {% if guest.city or guest.state %}{{ guest.city }}{% if guest.city and guest.state %}, {% endif %}{{ guest.state }} {{ guest.postal_code }}<br>{% endif %}
+                                            {{ guest.country|default:"" }}
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            {% if guest.emergency_contact_name %}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Emergency Contact</h4>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-900 dark:text-white">
+                                        {{ guest.emergency_contact_name }}<br>
+                                        {{ guest.emergency_contact_phone }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if guest.preferences %}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Preferences</h4>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-900 dark:text-white whitespace-pre-line">
+                                        {{ guest.preferences }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if guest.notes %}
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Internal Notes</h4>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-900 dark:text-white whitespace-pre-line">
+                                        {{ guest.notes }}
+                                    </p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reservation History -->
+            <div class="lg:col-span-2">
+                <!-- Current/Upcoming Reservations -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden mb-8">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Current & Upcoming Reservations</h3>
+                    </div>
+                    <div class="px-6 py-5">
+                        {% if current_reservation or upcoming_reservations %}
+                            <div class="space-y-6">
+                                {% if current_reservation %}
+                                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-sm font-medium text-green-800 dark:text-green-300">Currently Staying</h4>
+                                            <p class="mt-1 text-sm text-green-700 dark:text-green-400">
+                                                Room {{ current_reservation.room.room_number }} • 
+                                                {{ current_reservation.check_in_date|date:"M d" }} - {{ current_reservation.check_out_date|date:"M d, Y" }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <a href="{% url 'reservations:reservation_detail' current_reservation.id %}" class="text-green-700 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 text-sm font-medium">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                {% for reservation in upcoming_reservations %}
+                                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Upcoming Reservation</h4>
+                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                                Room {{ reservation.room.room_number }} • 
+                                                {{ reservation.check_in_date|date:"M d" }} - {{ reservation.check_out_date|date:"M d, Y" }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <a href="{% url 'reservations:reservation_detail' reservation.id %}" class="text-primary-600 hover:text-primary-900 text-sm font-medium">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-6">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No active reservations</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">This guest has no current or upcoming reservations.</p>
+                                <div class="mt-6">
+                                    <a href="{% url 'reservations:create_reservation' %}?guest_id={{ guest.id }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                                        Create Reservation
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Past Reservations -->
+                <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Reservation History</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Reservation</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Room</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dates</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                {% for reservation in reservations %}
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <a href="{% url 'reservations:reservation_detail' reservation.id %}" class="text-primary-600 hover:text-primary-900">
+                                            #{{ reservation.id }}
+                                        </a>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                                        {{ reservation.room.room_number }} ({{ reservation.room.room_type.name }})
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        {{ reservation.check_in_date|date:"M d" }} - {{ reservation.check_out_date|date:"M d, Y" }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {% if reservation.status == 'confirmed' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Confirmed
+                                            </span>
+                                        {% elif reservation.status == 'checked_in' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Checked In
+                                            </span>
+                                        {% elif reservation.status == 'checked_out' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                Checked Out
+                                            </span>
+                                        {% elif reservation.status == 'cancelled' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Cancelled
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">
+                                        ${{ reservation.total_amount|floatformat:2 }}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
+                                        <p>No reservation history found.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

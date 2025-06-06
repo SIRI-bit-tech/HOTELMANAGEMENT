@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - HotelPMS{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'rooms:room_list' %}" class="text-gray-400 hover:text-gray-600 mr-4">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </a>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+            <form method="post" class="space-y-6 p-6">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Room Number -->
+                    <div>
+                        <label for="{{ form.room_number.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Room Number *
+                        </label>
+                        {{ form.room_number }}
+                        {% if form.room_number.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.room_number.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Room Type -->
+                    <div>
+                        <label for="{{ form.room_type.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Room Type *
+                        </label>
+                        {{ form.room_type }}
+                        {% if form.room_type.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.room_type.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Floor -->
+                    <div>
+                        <label for="{{ form.floor.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Floor *
+                        </label>
+                        {{ form.floor }}
+                        {% if form.floor.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.floor.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Status *
+                        </label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.status.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Amenities -->
+                <div>
+                    <label for="{{ form.amenities.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Amenities
+                    </label>
+                    {{ form.amenities }}
+                    {% if form.amenities.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.amenities.errors.0 }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">List amenities, one per line</p>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <a href="{% url 'rooms:room_list' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="bg-primary-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        {% if room %}Update Room{% else %}Create Room{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

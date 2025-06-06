@@ -180,6 +180,8 @@ hotelms/
 
 ![Dashboard Dark Screenshot](screenshots/dashboard-dark.png)
 
+![Contact Page Screenshot](screenshots/contact.png)
+
 ---
 
 ## 🤝 Contributing

@@ -1,6 +1,9 @@
 # 🏨 HotelMS - Hotel Management System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Made with Django](https://img.shields.io/badge/Django-4.x-success)](https://www.djangoproject.com/)
+[![Status: In Development](https://img.shields.io/badge/status-active-green)]()
+
 
 A comprehensive, Django-powered hotel management system designed to streamline operations — from guest reservations and billing to housekeeping and reporting.
 
@@ -33,10 +36,128 @@ A comprehensive, Django-powered hotel management system designed to streamline o
 
 ---
 
+## 📋 Prerequisites
+- Before you begin, ensure you have met the following requirements:
+
+- Python 3.10+
+
+- pip (Python package installer)
+
+- git (Version control)
+
+- Redis (for Celery background tasks)
+
+- PostgreSQL (recommended for production; SQLite is fine for development)
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/SIRI-bit-tech/HOTELMANAGEMENT.git
+git clone https://github.com/SIRI-bit-tech/HOTELMANAGEMENT
 cd HOTELMANAGEMENT
+
+---
+
+### 2. Set Up Virtual Environment
+
+# Windows
+- python -m venv venv
+- venv\Scripts\activate
+
+# macOS/Linux
+- python3 -m venv venv
+- source venv/bin/activate
+
+---
+
+## 3. Install Dependencies
+- pip install -r requirements.txt
+
+---
+
+### 4. Configure Environment Variables
+
+```env 
+- SECRET_KEY=your_strong_secret_key_here
+- DEBUG=True
+
+# PostgreSQL example (uncomment and set if using PostgreSQL)
+# DB_NAME=hotelms
+# DB_USER=your_db_user
+# DB_PASSWORD=your_db_password
+# DB_HOST=localhost
+# DB_PORT=5432
+
+# Redis (used by Celery)
+- REDIS_URL=redis://localhost:6379/1
+- CELERY_BROKER_URL=redis://localhost:6379/0
+- CELERY_RESULT_BACKEND=redis://localhost:6379/0
+
+# Email (for development)
+- EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+
+---
+
+### 5. Apply Database Migrations
+
+```bash
+- python manage.py migrate
+
+---
+
+### 6. Create a Superuser
+
+```bash
+- python manage.py createsuperuser
+- Follow the prompts to set up your admin account.
+
+---
+
+### 7. Run the Development Server
+
+```bash
+- python manage.py runserver
+- Then open http://127.0.0.1:8000 in your browser to view the application.
+
+---
+
+## ⚙️ Start Celery Worker
+If you’re using Celery for background tasks (e.g., sending emails or generating reports), run this in a separate terminal window:
+
+- celery -A hotelms worker -l info
+
+---
+
+## 📁 Project Structure
+
+- The project follows a modular Django app structure:
+
+
+- hotelms/
+- ├── apps/                   # Main application modules
+- │   ├── billing/
+- │   ├── frontdesk/
+- │   ├── guests/
+- │   ├── housekeeping/
+- │   ├── reports/
+- │   ├── reservations/
+- │   ├── rooms/
+- │   └── users/
+- ├── hotelms/                # Project configuration (settings.py, urls.py)
+- ├── screenshots/            # Place your UI screenshots here
+- ├── static/                 # Static files (CSS, JS, images)
+- ├── templates/              # Django templates
+- ├── manage.py
+- ├── requirements.txt
+- ├── .env
+- └── README.md
+
+## 📸 Screenshots
+
+```markdown
+![Homepage Screenshot](screenshots/Homepage.png)
+![dashboard-light Screenshot](screenshots\dashboard-light.png)
+![dashboard-dark Screenshot](screenshots\dashboard-dark.png)

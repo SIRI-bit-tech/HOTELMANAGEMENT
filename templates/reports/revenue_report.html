@@ -144,7 +144,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                             {% if day.payment_count > 0 %}
-                                ${{ day.revenue|div:day.payment_count|floatformat:2 }}
+                                ${% widthratio day.revenue day.payment_count 1 %}.00
                             {% else %}
                                 $0.00
                             {% endif %}

@@ -181,6 +181,13 @@
 </div>
 
 <script>
+// Calculate values for charts
+const totalGuests = {{ total_guests }};
+const repeatGuests = {{ repeat_guests }};
+const vipGuests = {{ vip_guests }};
+const newGuests = totalGuests - repeatGuests;
+const regularRepeatGuests = repeatGuests - vipGuests;
+
 // Guest Type Distribution Chart
 const guestTypeCtx = document.getElementById('guestTypeChart').getContext('2d');
 new Chart(guestTypeCtx, {
@@ -188,7 +195,7 @@ new Chart(guestTypeCtx, {
     data: {
         labels: ['New Guests', 'Repeat Guests', 'VIP Guests'],
         datasets: [{
-            data: [{{ total_guests|sub:repeat_guests }}, {{ repeat_guests|sub:vip_guests }}, {{ vip_guests }}],
+            data: [newGuests, regularRepeatGuests, vipGuests],
             backgroundColor: [
                 'rgba(59, 130, 246, 0.8)',
                 'rgba(34, 197, 94, 0.8)',
@@ -222,10 +229,10 @@ new Chart(frequencyCtx, {
         datasets: [{
             label: 'Number of Guests',
             data: [
-                {{ total_guests|sub:repeat_guests }},
-                Math.floor({{ repeat_guests }} * 0.6),
-                Math.floor({{ repeat_guests }} * 0.3),
-                Math.floor({{ repeat_guests }} * 0.1)
+                newGuests,
+                Math.floor(repeatGuests * 0.6),
+                Math.floor(repeatGuests * 0.3),
+                Math.floor(repeatGuests * 0.1)
             ],
             backgroundColor: 'rgba(34, 197, 94, 0.8)',
             borderColor: 'rgb(34, 197, 94)',
